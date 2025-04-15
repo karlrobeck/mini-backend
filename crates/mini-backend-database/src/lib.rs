@@ -46,14 +46,35 @@ pub mod test {
         .execute(&pool)
         .await?;
 
+        sqlx::query(
+            "insert into temp_table(id,name,email,password,email_verified,age,weight,metadata,created,updated) values (?,?,?,?,?,?,?,?,?,?)",
+        )
+        .bind(Uuid::new_v4())
+        .bind("john doe")
+        .bind("johndoe@email.com")
+        .bind("my-randomPassword1")
+        .bind(true)
+        .bind(16)
+        .bind(50.7)
+        .bind(json!({
+            "profile":"http://localhost:443/profile.jpeg"
+        }))
+        .bind(Utc::now())
+        .bind(Utc::now())
+        .execute(&pool)
+        .await?;
+
         let table_info = sqlx::query_as::<_, TableInfo>("pragma table_info('temp_table')")
             .fetch_all(&pool)
             .await?;
 
         let row = sqlx::query("select * from temp_table")
-            .fetch_one(&pool)
+            .fetch_all(&pool)
             .await?
-            .to_json(table_info)?;
+            .into_iter()
+            .map(|row| row.to_json(&table_info))
+            .filter_map(|row| row.ok())
+            .collect::<Vec<_>>();
 
         println!("{:#?}", row);
 
