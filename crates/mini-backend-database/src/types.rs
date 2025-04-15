@@ -11,12 +11,12 @@ pub struct Email(String);
 
 #[derive(FromRow, Debug)]
 pub struct TableInfo {
-    cid: i64,
-    name: String,
-    r#type: String,
-    notnull: bool,
-    dflt_value: String,
-    pk: bool,
+    pub cid: i64,
+    pub name: String,
+    pub r#type: String,
+    pub notnull: bool,
+    pub dflt_value: String,
+    pub pk: bool,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -46,7 +46,7 @@ where
     where
         S: serde::Serializer,
     {
-        use sqlx::{Column, TypeInfo, ValueRef};
+        use sqlx::{Column, ValueRef};
 
         let (table_info, row) = &self.0;
 
@@ -83,7 +83,7 @@ where
                         col_type => {
                             let mut split = col_type.split('_');
                             let main_type = split.next().unwrap_or("");
-                            let fallback_type = split.next().unwrap_or("");
+                            let _fallback_type = split.next().unwrap_or("");
                             match main_type {
                                 "uuid" => SerializeRow::map_serialize::<_, sqlx::Sqlite, Uuid>(
                                     &mut map, key, raw_value,

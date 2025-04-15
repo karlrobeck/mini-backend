@@ -1,11 +1,3 @@
-use serde::Serialize;
-use sqlx::{
-    Column, Decode, Row,
-    prelude::FromRow,
-    sqlite::{SqliteRow, SqliteTypeInfo},
-};
-use types::{SerializeRow, TableInfo};
-
 pub mod types;
 
 #[cfg(test)]
@@ -15,7 +7,7 @@ pub mod test {
     use sqlx::{Pool, Sqlite};
     use uuid::Uuid;
 
-    use crate::types::{SerializeRow, SqlxJsonExt, TableInfo, to_json};
+    use crate::types::{SqlxJsonExt, TableInfo};
 
     #[sqlx::test]
     async fn test_conversion_to_json(pool: Pool<Sqlite>) -> Result<(), Box<dyn std::error::Error>> {
