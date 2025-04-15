@@ -31,7 +31,7 @@ pub enum DatabaseTypes {
     Json(serde_json::Value),
 }
 
-pub struct SerializeRow<'a, R: Row>(pub (&'a Vec<TableInfo>, R));
+pub struct SerializeRow<'a, R: Row>(pub (&'a [TableInfo], R));
 
 impl<'r, R: Row> Serialize for &'r SerializeRow<'_, R>
 where
@@ -158,7 +158,7 @@ where
 {
     fn to_json(
         self,
-        table_info: &Vec<TableInfo>,
+        table_info: &[TableInfo],
     ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
     where
         R::Database: sqlx::Database<ValueRef<'r> = sqlx::sqlite::SqliteValueRef<'r>>,
@@ -172,7 +172,7 @@ where
 {
     fn to_json(
         self,
-        table_info: &Vec<TableInfo>,
+        table_info: &[TableInfo],
     ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
     where
         R::Database: sqlx::Database<ValueRef<'r> = sqlx::sqlite::SqliteValueRef<'r>>,
